@@ -280,7 +280,8 @@ public class LoanScheduleAssembler {
                 graceOnPrincipalPayment, graceOnInterestPayment, graceOnInterestCharged, interestChargedFromDate, inArrearsToleranceMoney,
                 loanProduct.isMultiDisburseLoan(), emiAmount, disbursementDatas, maxOutstandingBalance, loanVariationTermsData,
                 graceOnArrearsAgeing, daysInMonthType, daysInYearType, isInterestRecalculationEnabled, recalculationFrequencyType,
-                restCalendarInstance, principalThresholdForLastInstalment, installmentAmountInMultiplesOf);
+                restCalendarInstance, principalThresholdForLastInstalment, installmentAmountInMultiplesOf,
+                loanProduct.isApplyInterestForWholePeriodOnPreClosure());
     }
 
     private CalendarInstance createInterestRecalculationCalendarInstance(final LocalDate calendarStartDate,

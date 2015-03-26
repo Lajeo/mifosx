@@ -148,6 +148,9 @@ public class LoanProduct extends AbstractPersistable<Long> {
     @Column(name = "instalment_amount_in_multiples_of", nullable = true)
     private Integer installmentAmountInMultiplesOf;
 
+    @Column(name = "apply_interest_for_whole_period_on_preclose")
+    private boolean applyInterestForWholePeriodOnPreClosure;
+
     public static LoanProduct assembleFromJson(final Fund fund, final LoanTransactionProcessingStrategy loanTransactionProcessingStrategy,
             final List<Charge> productCharges, final JsonCommand command, final AprCalculator aprCalculator) {
 
@@ -250,6 +253,9 @@ public class LoanProduct extends AbstractPersistable<Long> {
         final Integer installmentAmountInMultiplesOf = command
                 .integerValueOfParameterNamed(LoanProductConstants.installmentAmountInMultiplesOfParamName);
 
+        final boolean applyInterestForWholePeriodOnPreClosure = command
+                .booleanPrimitiveValueOfParameterNamed(LoanProductConstants.applyInterestForWholePeriodOnPreClosureParamName);
+
         return new LoanProduct(fund, loanTransactionProcessingStrategy, name, shortName, description, currency, principal, minPrincipal,
                 maxPrincipal, interestRatePerPeriod, minInterestRatePerPeriod, maxInterestRatePerPeriod, interestFrequencyType,
                 annualInterestRate, interestMethod, interestCalculationPeriodMethod, repaymentEvery, repaymentFrequencyType,
@@ -259,7 +265,8 @@ public class LoanProduct extends AbstractPersistable<Long> {
                 outstandingLoanBalance, graceOnArrearsAgeing, overdueDaysForNPA, daysInMonthType, daysInYearType,
                 isInterestRecalculationEnabled, interestRecalculationSettings, minimumDaysBetweenDisbursalAndFirstRepayment,
                 holdGuarantorFunds, loanProductGuaranteeDetails, principalThresholdForLastInstallment,
-                accountMovesOutOfNPAOnlyOnArrearsCompletion, canDefineEmiAmount, installmentAmountInMultiplesOf);
+                accountMovesOutOfNPAOnlyOnArrearsCompletion, canDefineEmiAmount, installmentAmountInMultiplesOf,
+                applyInterestForWholePeriodOnPreClosure);
 
     }
 
@@ -486,7 +493,7 @@ public class LoanProduct extends AbstractPersistable<Long> {
             final Integer minimumDaysBetweenDisbursalAndFirstRepayment, final boolean holdGuarantorFunds,
             final LoanProductGuaranteeDetails loanProductGuaranteeDetails, final BigDecimal principalThresholdForLastInstallment,
             final boolean accountMovesOutOfNPAOnlyOnArrearsCompletion, final boolean canDefineEmiAmount,
-            final Integer installmentAmountInMultiplesOf) {
+            final Integer installmentAmountInMultiplesOf, final boolean applyInterestForWholePeriodOnPreClosure) {
         this.fund = fund;
         this.transactionProcessingStrategy = transactionProcessingStrategy;
         this.name = name.trim();
@@ -542,6 +549,7 @@ public class LoanProduct extends AbstractPersistable<Long> {
         this.accountMovesOutOfNPAOnlyOnArrearsCompletion = accountMovesOutOfNPAOnlyOnArrearsCompletion;
         this.canDefineInstallmentAmount = canDefineEmiAmount;
         this.installmentAmountInMultiplesOf = installmentAmountInMultiplesOf;
+        this.applyInterestForWholePeriodOnPreClosure = applyInterestForWholePeriodOnPreClosure;
     }
 
     public MonetaryCurrency getCurrency() {
@@ -795,6 +803,14 @@ public class LoanProduct extends AbstractPersistable<Long> {
             actualChanges.put(LoanProductConstants.installmentAmountInMultiplesOfParamName, newValue);
             actualChanges.put("locale", localeAsInput);
             this.installmentAmountInMultiplesOf = newValue;
+        }
+
+        if (command.isChangeInBooleanParameterNamed(LoanProductConstants.applyInterestForWholePeriodOnPreClosureParamName,
+                this.applyInterestForWholePeriodOnPreClosure)) {
+            final boolean newValue = command
+                    .booleanPrimitiveValueOfParameterNamed(LoanProductConstants.applyInterestForWholePeriodOnPreClosureParamName);
+            actualChanges.put(LoanProductConstants.applyInterestForWholePeriodOnPreClosureParamName, newValue);
+            this.applyInterestForWholePeriodOnPreClosure = newValue;
         }
 
         return actualChanges;
@@ -1067,6 +1083,10 @@ public class LoanProduct extends AbstractPersistable<Long> {
 
     public Integer getInstallmentAmountInMultiplesOf() {
         return this.installmentAmountInMultiplesOf;
+    }
+
+    public boolean isApplyInterestForWholePeriodOnPreClosure() {
+        return this.applyInterestForWholePeriodOnPreClosure;
     }
 
 }

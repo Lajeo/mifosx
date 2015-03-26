@@ -76,7 +76,8 @@ public final class LoanProductDataValidator {
             LoanProductConstants.holdGuaranteeFundsParamName, LoanProductConstants.minimumGuaranteeFromGuarantorParamName,
             LoanProductConstants.minimumGuaranteeFromOwnFundsParamName, LoanProductConstants.principalThresholdForLastInstallmentParamName,
             LoanProductConstants.accountMovesOutOfNPAOnlyOnArrearsCompletionParamName, LoanProductConstants.canDefineEmiAmountParamName,
-            LoanProductConstants.installmentAmountInMultiplesOfParamName));
+            LoanProductConstants.installmentAmountInMultiplesOfParamName,
+            LoanProductConstants.applyInterestForWholePeriodOnPreClosureParamName));
 
     private final FromJsonHelper fromApiJsonHelper;
 
@@ -436,6 +437,11 @@ public final class LoanProductDataValidator {
                 validateBorrowerCycleVariations(element, baseDataValidator);
             }
         }
+
+        final Boolean applyInterestForWholePeriodOnPreClosure = this.fromApiJsonHelper.extractBooleanNamed(
+                LoanProductConstants.applyInterestForWholePeriodOnPreClosureParamName, element);
+        baseDataValidator.reset().parameter(LoanProductConstants.applyInterestForWholePeriodOnPreClosureParamName)
+                .value(applyInterestForWholePeriodOnPreClosure).ignoreIfNull().validateForBooleanValue();
 
         validateMultiDisburseLoanData(baseDataValidator, element);
 
@@ -886,6 +892,11 @@ public final class LoanProductDataValidator {
                 validateBorrowerCycleVariations(element, baseDataValidator);
             }
         }
+
+        final Boolean applyInterestForWholePeriodOnPreClosure = this.fromApiJsonHelper.extractBooleanNamed(
+                LoanProductConstants.applyInterestForWholePeriodOnPreClosureParamName, element);
+        baseDataValidator.reset().parameter(LoanProductConstants.applyInterestForWholePeriodOnPreClosureParamName)
+                .value(applyInterestForWholePeriodOnPreClosure).ignoreIfNull().validateForBooleanValue();
 
         validateMultiDisburseLoanData(baseDataValidator, element);
 
